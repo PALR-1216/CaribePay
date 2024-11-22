@@ -7,20 +7,20 @@ ReliefCoin is a platform that provides an easier and faster way to transfer fund
 ## Features
 
 - **Fast Transactions**: ReliefCoin enables instant fund transfers using cutting-edge technology, supported by the USDC stablecoin to ensure reliability and value stability.
-- **Secure Payments**: We prioritize the security of your transactions by partnering with trusted providers like Stripe to keep your information safe.
+- **Secure Payments**: We prioritize the security of your transactions by partnering with trusted providers to keep your information safe.
 - **Bank Integration**: Easily integrate with multiple banks in Puerto Rico and the US, allowing seamless fund transfers without the usual daily limits.
 - **Mobile-Friendly**: The ReliefCoin app is user-friendly and mobile-ready, providing access to funds whenever and wherever you need it.
 
 ## How It Works
 
 1. **Get Started**: Visit our platform and sign up to create an account.
-2. **Verify Your Identity**: Use Stripe Identity to quickly and securely verify yourself.
+2. **Verify Your Identity**: Quickly and securely verify yourself.
 3. **Send or Receive Funds**: Use ReliefCoin to instantly transfer funds to your loved ones, ensuring that financial aid gets to those who need it the most.
 
 ## Technologies Used
 
 - **Frontend**: HTML, CSS (custom styling included in the main page for a consistent and easy-to-use interface).
-- **Payment Providers**: Stripe for secure payments.
+- **Payment Providers**: Trusted providers for secure payments.
 - **Stablecoins**: USDC for instant and reliable transfers.
 - **Bank Integration**: Support for multiple banks in Puerto Rico and the US to provide a seamless experience.
 
@@ -81,3 +81,35 @@ You can see a live demo of ReliefCoin in action [here](https://www.reliefcoin.co
 ![Features Screenshot](screenshots/features.png)
 
 &copy; 2024 ReliefCoin. All rights reserved.
+
+## Privacy Policy
+
+### Introduction
+
+At ReliefCoin, we take your privacy seriously. This privacy policy outlines how we collect, use, and protect your information when you use our services.
+
+### Information We Collect
+
+- **Personal Information**: We collect information such as your name, email address, and phone number when you sign up for our services.
+- **Payment Information**: We collect payment details necessary to facilitate transactions, but do not store sensitive payment information directly.
+- **Usage Data**: We collect data about how you use our platform to help us improve our services.
+
+### How We Use Your Information
+
+- **To Provide Services**: We use your information to facilitate fund transfers and ensure smooth transactions.
+- **To Improve Our Platform**: Usage data helps us understand how users interact with ReliefCoin and make improvements.
+- **To Communicate with You**: We may use your contact information to provide updates, respond to inquiries, and share important information.
+
+### Security
+
+We use industry-standard security measures to protect your personal information and ensure that your data is handled securely.
+
+### Your Rights
+
+You have the right to access, update, or delete your personal information at any time. If you have any questions or concerns about your data, please contact us at [support@reliefcoin.com](mailto:support@reliefcoin.com).
+
+### Changes to This Policy
+
+We may update this privacy policy from time to time. We encourage you to review this policy periodically for any changes.
+
+If you have any questions about our privacy practices, please contact us at [support@reliefcoin.com](mailto:support@reliefcoin.com).
