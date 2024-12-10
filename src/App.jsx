@@ -1,13 +1,19 @@
-import { useState } from 'react'
-import './App.css'
+// src/App.js
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Login from './Components/LoginView';
 
 function App() {
-
   return (
-    <>
-      <h1>Hello world</h1>
-    </>
-  )
+    <div>
+      {/* Navigation component will go here */}
+      <Routes>
+        <Route path="/" element={<Login />} />
+        {/* <Route path="/about" element={<About />} /> */}
+        {/* <Route path="/contact" element={<Contact />} /> */}
+      </Routes>
+    </div>
+  );
 }
 
-export default App
+export default App;
