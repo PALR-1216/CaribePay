@@ -1,0 +1,2 @@
+TODO: i need to make a better ui for the dashboard
+TODO: work on the server to run the deno app to alwasy be used in the app 
