@@ -102,6 +102,16 @@ class AuthService {
         }
     }
 
+    async findUserByUserName(userName) {
+        try {
+            
+            
+        } catch (error) {
+            return { success: false, message: error.message };
+            
+        }
+    }
+
 
 }
 
