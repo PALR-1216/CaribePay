@@ -1,0 +1,260 @@
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.send-funds-container {
+  animation: fadeIn 0.4s ease-out;
+  padding: 24px;
+  min-height: 100vh;
+  background-color: #0a0b0d;
+  color: #ffffff;
+  position: relative;
+  padding-top: 4rem;
+}
+
+.send-funds-title {
+  animation: fadeIn 0.4s ease-out 0.1s both;
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 32px;
+  color: #ffffff;
+}
+
+.search-container {
+  animation: fadeIn 0.4s ease-out 0.2s both;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.search-wrapper {
+  display: flex;
+  align-items: center;
+  background-color: #1e2026;
+  border-radius: 12px;
+  padding: 4px 16px;
+  transition: all 0.3s ease;
+}
+
+.search-wrapper:focus-within {
+  box-shadow: 0 0 0 2px #3773f5;
+}
+
+.search-icon-wrapper {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  margin-right: 12px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.search-icon {
+  color: #616771;
+  font-size: 20px;
+}
+
+.search-input {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 16px 0;
+  color: #ffffff;
+  font-size: 16px;
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: #616771;
+}
+
+.scan-button {
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.scan-button:hover {
+  background-color: #282b2f;
+}
+
+.camera-icon {
+  color: #616771;
+  font-size: 20px;
+}
+
+.empty-state {
+  animation: fadeIn 0.4s ease-out 0.3s both;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 120px;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.empty-state-icon {
+  font-size: 80px;
+  color: #282b2f;
+  margin-bottom: 24px;
+}
+
+.empty-state-title {
+  font-size: 24px;
+  color: #ffffff;
+  margin-bottom: 12px;
+}
+
+.empty-state-description {
+  font-size: 16px;
+  color: #616771;
+  max-width: 300px;
+  line-height: 1.5;
+}
+
+.back-button {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  background: none;
+  border: none;
+  color: #F3F4F6;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.back-button:hover {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3B82F6;
+}
+
+.back-button:hover .back-arrow {
+  transform: translateX(-4px);
+}
+
+.back-arrow {
+  font-size: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .send-funds-container {
+    padding: 16px;
+    padding-top: 3.5rem;
+  }
+  
+  .send-funds-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .search-container {
+    max-width: 100%;
+    padding: 0 8px;
+  }
+
+  .search-wrapper {
+    padding: 2px 12px;
+  }
+
+  .search-icon-wrapper {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .search-input {
+    font-size: 14px;
+    padding: 12px 0;
+  }
+
+  .scan-button {
+    padding: 6px;
+  }
+
+  .empty-state {
+    margin-top: 80px;
+  }
+
+  .empty-state-icon {
+    font-size: 60px;
+    margin-bottom: 16px;
+  }
+
+  .empty-state-title {
+    font-size: 20px;
+  }
+
+  .empty-state-description {
+    font-size: 14px;
+    padding: 0 24px;
+  }
+
+  .back-button {
+    top: 1rem;
+    left: 1rem;
+  }
+  
+  .back-button span:not(.back-arrow) {
+    display: none;
+  }
+}
+
+@media (max-width: 380px) {
+  .send-funds-container {
+    padding: 12px;
+    padding-top: 3rem;
+  }
+
+  .search-wrapper {
+    padding: 0 8px;
+  }
+
+  .search-icon-wrapper {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-right: 8px;
+  }
+
+  .search-input {
+    font-size: 13px;
+  }
+
+  .camera-icon, .search-icon {
+    font-size: 16px;
+  }
+
+  .empty-state {
+    margin-top: 60px;
+  }
+
+  .empty-state-icon {
+    font-size: 50px;
+  }
+
+  .empty-state-title {
+    font-size: 18px;
+  }
+
+  .empty-state-description {
+    font-size: 13px;
+    max-width: 260px;
+  }
+}

@@ -1,23 +1,24 @@
 // src/App.js
 import React, { useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import Login from './Components/LoginView/LoginView';
 import DashBoard from './Components/Dashboard/DashBoardView';
 import TransactionView from './Components/Transaction/TransactionView';
 import SignUpView from './Components/SignUp/SignUpView';
 import authService from './Services/AuthService';
+import ReceiveView from './Components/ReceiveFunds/ReceiveView';
+import SendFundsView from './Components/SendFunds/SendFundsView';
 
 function App() {
-  const navigator = 
+  const navigate = useNavigate();
   useEffect(() => {
     authService.verfiyAuth().then((response) => {
       if (!response.success) {
-        navigator.navigate('/login');
+        navigate('/login');
       } else {
-        navigator.navigate('/dashboard');
+        navigate('/dashboard');
       }
     });
-
   }, []);
   return (
     <div>
@@ -27,6 +28,8 @@ function App() {
         <Route path="/dashboard" element={<DashBoard />} />
         <Route path="/transactions" element={<TransactionView />} />
         <Route path="/signUp" element={<SignUpView />} />
+        <Route path="/receiveFunds" element={<ReceiveView />} />
+        <Route path="/sendFunds" element={<SendFundsView />} />
       </Routes>
     </div>
   );

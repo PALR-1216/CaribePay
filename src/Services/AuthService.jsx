@@ -22,6 +22,8 @@ class AuthService {
         return { success: true, user: data.user };
     }
 
+    
+
     async createProfile(user) {
         try {
             const { data, error } = await supabase.from('Users').insert([
@@ -77,6 +79,26 @@ class AuthService {
 
         } catch (error) {
             return { success: false, message: error.message };
+        }
+    }
+
+    async getUserWallet() {
+        try {
+            const userID = (await supabase.auth.getUser()).data.user.id
+            if (!userID) {
+                return { success: false, message: 'User not logged in' };
+            } else {
+                // await supabase.database.from('Users').select('*').eq('user_id', user.id);
+                let { data, error } = await supabase.from('Wallets').select('*').eq('user_id', userID);
+                if (error) {
+                    return { success: false, message: error.message };
+                }
+                return { success: true, wallet: data[0] };
+            }
+            
+        } catch (error) {
+            return { success: false, message: error.message };
+            
         }
     }
 
