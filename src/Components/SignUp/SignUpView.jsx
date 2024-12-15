@@ -1,237 +1,222 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import './SignUp.css'
-import authService from '../../Services/AuthService'
+import React, { useState } from 'react';
+import './SignUp.css';
+import authService from '../../Services/AuthService';
 
 export default function SignUpView() {
-    const navigate = useNavigate()
-    const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        dateOfBirth: '',
-        email: '',
-        username: '',
-        password: '',
-        confirmPassword: ''
-    })
-    const [error, setError] = useState('')
-    const [passwordStrength, setPasswordStrength] = useState('')
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    dateOfBirth: '',
+    username: '',
+    password: ''
+  });
 
-    const goToLogin = () => {
-        navigate('/login', { replace: true })
+  const [errors, setErrors] = useState({
+    email: '',
+    username: '',
+    dateOfBirth: ''
+  });
+
+  const [isValid, setIsValid] = useState({
+    email: false,
+    username: false,
+    dateOfBirth: false,
+    password: false
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Validate all fields before submission
+    const emailError = await validateEmail(formData.email);
+    const usernameError = await validateUsername(formData.username);
+    const dateError = validateDateOfBirth(formData.dateOfBirth);
+    
+    if (!emailError && !usernameError && !dateError && formData.password.length >= 8) {
+      // Proceed with form submission
+      try {
+        await authService.signUp(formData);
+        // Handle successful signup
+      } catch (error) {
+        console.error('Signup error:', error);
+      }
+    }
+  };
+
+  const validateEmail = async (email) => {
+    try {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        setIsValid(prev => ({ ...prev, email: false }));
+        return "Please enter a valid email address";
+      }
+      
+      const response = await authService.validateEmail(email.trim());
+      const isEmailValid = response.success; // Adjust based on your API response
+      setIsValid(prev => ({ ...prev, email: isEmailValid }));
+      return isEmailValid ? "" : "Email already exists";
+    } catch (error) {
+      setIsValid(prev => ({ ...prev, email: false }));
+      return "Error validating email";
+    }
+  };
+
+  const validateUsername = async (username) => {
+    try {
+      if (username.length < 3) {
+        setIsValid(prev => ({ ...prev, username: false }));
+        return "Username must be at least 3 characters";
+      }
+      
+      const response = await authService.validateUsername(username.trim());
+      const isUsernameValid = response.success; // Adjust based on your API response
+      setIsValid(prev => ({ ...prev, username: isUsernameValid }));
+      return isUsernameValid ? "" : "Username already taken";
+    } catch (error) {
+      setIsValid(prev => ({ ...prev, username: false }));
+      return "Error validating username";
+    }
+  };
+
+  const validateDateOfBirth = (dateString) => {
+    const today = new Date();
+    const birthDate = new Date(dateString);
+    const age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+    if (birthDate > today) {
+      return "Date of birth cannot be in the future";
+    }
+    
+    if (age < 18 || (age === 18 && monthDiff < 0)) {
+      return "You must be at least 18 years old";
+    }
+    
+    return "";
+  };
+
+  const handleChange = async (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+
+    // Validate fields on change
+    let error = '';
+    if (name === 'email') {
+      error = await validateEmail(value);
+    } else if (name === 'username') {
+      error = await validateUsername(value);
+    } else if (name === 'dateOfBirth') {
+      error = validateDateOfBirth(value);
+      setIsValid(prev => ({ ...prev, dateOfBirth: !error }));
+    } else if (name === 'password') {
+      setIsValid(prev => ({ ...prev, password: value.length >= 8 }));
     }
 
-    const handleChange = (e) => {
-        const { name, value } = e.target
-        setFormData({
-            ...formData,
-            [name]: value
-        })
+    setErrors(prev => ({
+      ...prev,
+      [name]: error
+    }));
+  };
 
-        if (name === 'password') {
-            evaluatePasswordStrength(value)
-        }
-    }
+  const isFormValid = () => {
+    return isValid.email && isValid.username && isValid.dateOfBirth && 
+           isValid.password && !errors.email && !errors.username && !errors.dateOfBirth;
+  };
 
-    const evaluatePasswordStrength = (password) => {
-        let strength = ''
-        if (password.length >= 8) {
-            if (/[A-Z]/.test(password) && /[0-9]/.test(password) && /[@$!%*?&#]/.test(password)) {
-                strength = 'Strong'
-            } else if (/[A-Z]/.test(password) && /[0-9]/.test(password)) {
-                strength = 'Medium'
-            } else {
-                strength = 'Weak'
-            }
-        } else {
-            strength = 'Too Short'
-        }
-        setPasswordStrength(strength)
-    }
-
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        setError('')
-
-        if (formData.password !== formData.confirmPassword) {
-            setError('Passwords do not match')
-            return
-        }
-
-        if (passwordStrength === 'Too Short' || passwordStrength === 'Weak') {
-            setError('Password is not strong enough')
-            return
-        }
-
-        try {
-            const data = await authService.register(formData)
-            if (data.success) {
-                navigate('/dashboard')
-            } else {
-                setError(data.message || 'Registration failed')
-            }
-        } catch (err) {
-            setError('Error creating account')
-        }
-    }
-
-    return (
-        <div className="signup-container">
-            <div className="signup-form-container">
-                <div className="signup-form-wrapper">
-                    <img 
-                        src="https://companieslogo.com/img/orig/HOOD-3f9aec90.png?t=1720244492" 
-                        alt="CaribePay Logo" 
-                        className="signup-logo" 
-                    />
-                    <h1 className="signup-title">Create Your Account</h1>
-
-                    <form className="signup-form" onSubmit={handleSubmit} noValidate>
-                        <div className="form-row">
-                            <div className="form-group half">
-                                <div className="input-wrapper">
-                                    <input
-                                        type="text"
-                                        id="firstName"
-                                        name="firstName"
-                                        className="form-input"
-                                        onChange={handleChange}
-                                        value={formData.firstName}
-                                        required
-                                        aria-required="true"
-                                    />
-                                    <label htmlFor="firstName" className="floating-label">First Name</label>
-                                </div>
-                            </div>
-                            <div className="form-group half">
-                                <div className="input-wrapper">
-                                    <input
-                                        type="text"
-                                        id="lastName"
-                                        name="lastName"
-                                        className="form-input"
-                                        onChange={handleChange}
-                                        value={formData.lastName}
-                                        required
-                                        aria-required="true"
-                                    />
-                                    <label htmlFor="lastName" className="floating-label">Last Name</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="form-group">
-                            <div className="input-wrapper">
-                                <input
-                                    type="date"
-                                    id="dateOfBirth"
-                                    name="dateOfBirth"
-                                    className="form-input"
-                                    onChange={handleChange}
-                                    value={formData.dateOfBirth}
-                                    required
-                                    aria-required="true"
-                                />
-                                <label htmlFor="dateOfBirth" className="floating-label">Date of Birth</label>
-                            </div>
-                        </div>
-
-                        <div className="form-group">
-                            <div className="input-wrapper">
-                                <input
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    className="form-input"
-                                    onChange={handleChange}
-                                    value={formData.email}
-                                    required
-                                    aria-required="true"
-                                />
-                                <label htmlFor="email" className="floating-label">Email</label>
-                            </div>
-                        </div>
-
-                        <div className="form-group">
-                            <div className="input-wrapper">
-                                <input
-                                    type="text"
-                                    id="username"
-                                    name="username"
-                                    className="form-input"
-                                    onChange={handleChange}
-                                    value={formData.username}
-                                    required
-                                    aria-required="true"
-                                />
-                                <label htmlFor="username" className="floating-label">Username</label>
-                            </div>
-                        </div>
-
-                        <div className="form-group">
-                            <div className="input-wrapper">
-                                <input
-                                    type="password"
-                                    id="password"
-                                    name="password"
-                                    className="form-input"
-                                    onChange={handleChange}
-                                    value={formData.password}
-                                    required
-                                    aria-required="true"
-                                    aria-describedby="passwordHelp"
-                                />
-                                <label htmlFor="password" className="floating-label">Password</label>
-                            </div>
-                            {formData.password && (
-                                <div id="passwordHelp" className={`password-strength ${passwordStrength.toLowerCase()}`}>
-                                    Password Strength: {passwordStrength}
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="form-group">
-                            <div className="input-wrapper">
-                                <input
-                                    type="password"
-                                    id="confirmPassword"
-                                    name="confirmPassword"
-                                    className="form-input"
-                                    onChange={handleChange}
-                                    value={formData.confirmPassword}
-                                    required
-                                    aria-required="true"
-                                />
-                                <label htmlFor="confirmPassword" className="floating-label">Confirm Password</label>
-                            </div>
-                        </div>
-
-                        {error && <div className="error-message" role="alert">{error}</div>}
-
-                        <div className="form-group">
-                            <button type="submit" className="signup-button">
-                                Create Account
-                            </button>
-                        </div>
-
-                        <p className="login-prompt">
-                            Already have an account?{' '}
-                            <button type="button" onClick={goToLogin} className="login-link">
-                                Sign in
-                            </button>
-                        </p>
-                    </form>
-                </div>
-            </div>
-
-            <div className="signup-image-container">
-                <div className="image-overlay"></div>
-                <img
-                    src="https://bunteidee.de/wp-content/uploads/2023/07/BunteIdee-Services-left.jpg"
-                    alt="Signup Illustration"
-                    className="signup-image"
-                />
-            </div>
+  return (
+    <div className="signup-container">
+      <div className="signup-card">
+        <div className="signup-header">
+          <h1>Create Account</h1>
+          <p>Start your crypto journey today</p>
         </div>
-    )
+        
+        <form onSubmit={handleSubmit} className="signup-form">
+          <div className="form-row">
+            <div className="form-group">
+              <label>First Name</label>
+              <input
+                type="text"
+                name="firstName"
+                placeholder="John"
+                onChange={handleChange}
+                required
+              />
+            </div>
+            
+            <div className="form-group">
+              <label>Last Name</label>
+              <input
+                type="text"
+                name="lastName"
+                placeholder="Doe"
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label>Email</label>
+            <input
+              type="email"
+              name="email"
+              placeholder="you@example.com"
+              onChange={handleChange}
+              required
+            />
+            {errors.email && <span className="error-message">{errors.email}</span>}
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label>Date of Birth</label>
+              <input
+                type="date"
+                name="dateOfBirth"
+                onChange={handleChange}
+                required
+              />
+              {errors.dateOfBirth && <span className="error-message">{errors.dateOfBirth}</span>}
+            </div>
+
+            <div className="form-group">
+              <label>Username</label>
+              <input
+                type="text"
+                name="username"
+                placeholder="Choose a username"
+                onChange={handleChange}
+                required
+              />
+              {errors.username && <span className="error-message">{errors.username}</span>}
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              name="password"
+              placeholder="••••••••"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <button 
+            type="submit" 
+            disabled={!isFormValid()}
+            className={!isFormValid() ? "button-disabled" : ""}
+          >
+            Create Account
+          </button>
+        </form>
+      </div>
+    </div>
+  );
 }

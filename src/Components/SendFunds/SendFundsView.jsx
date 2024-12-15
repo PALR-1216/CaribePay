@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { FiSearch, FiCamera, FiUsers } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import './SendFund.css';
+import authService from '../../Services/AuthService';
 
 const SendFundsView = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
   const navigate = useNavigate();
 
   const handleBack = () => {
@@ -13,7 +15,30 @@ const SendFundsView = () => {
 
   const handleCamera = () => {
     console.log('Camera clicked');
-  }
+  };
+
+  const getResults = async(query) => {
+    try {
+      if (!query) {
+        setSearchResults([]);
+        return;
+      }
+
+      await authService.findUserByUserName(query).then((response) => {
+        if (response.success) {
+          console.log(response.users);
+          setSearchResults(response.users);
+        } else {
+          console.error(response.message);
+        }
+      })
+      
+    } catch (error) {
+      console.error(error);
+      
+    }
+
+  };
 
   return (
     <div className="send-funds-container">
@@ -32,7 +57,10 @@ const SendFundsView = () => {
             placeholder="Search username or paste address"
             className="search-input"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              getResults(e.target.value);
+            }}
           />
           <button onClick={handleCamera} className="scan-button">
             <FiCamera className="camera-icon" />
