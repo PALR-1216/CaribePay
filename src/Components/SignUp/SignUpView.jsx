@@ -64,15 +64,15 @@ export default function SignUpView() {
 
   const validateUsername = async (username) => {
     try {
-      if (username.length < 3) {
+      if (username.length < 5) {
         setIsValid(prev => ({ ...prev, username: false }));
-        return "Username must be at least 3 characters";
+        return "Username must be at least 5 characters";
       }
-      
-      const response = await authService.validateUsername(username.trim());
+
+      const response = await authService.validateUsername(username);
       const isUsernameValid = response.success; // Adjust based on your API response
       setIsValid(prev => ({ ...prev, username: isUsernameValid }));
-      return isUsernameValid ? "" : "Username already taken";
+      return isUsernameValid ? "" : "Username already exists";
     } catch (error) {
       setIsValid(prev => ({ ...prev, username: false }));
       return "Error validating username";

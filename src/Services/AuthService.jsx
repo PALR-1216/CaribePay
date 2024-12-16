@@ -31,7 +31,7 @@ class AuthService {
     }
 
 
-    
+
 
     async createProfile(userID, email) {
         try {
@@ -104,48 +104,57 @@ class AuthService {
                 }
                 return { success: true, wallet: data[0] };
             }
-            
+
         } catch (error) {
             return { success: false, message: error.message };
-            
+
         }
     }
 
     async findUserByUserName(userName) {
         try {
-            let {data,error} = await supabase.from('Users').select('*').eq('userName', userName);
+            let { data, error } = await supabase.from('Users').select('*').eq('userName', userName);
             if (error) {
                 return { success: false, message: error.message };
             }
             const userID = (await supabase.auth.getUser()).data.user.id;
             const filteredData = data.filter(user => user.user_id !== userID);
             return { success: true, users: filteredData };
-            
+
         } catch (error) {
             return { success: false, message: error.message };
         }
     }
 
     async validateEmail(email) {
-       try {
-        let {data, error} = await supabase.from('Users').select('*').eq('email', email.trim());
-        if (error) {
+        try {
+            let { data, error } = await supabase.from('Users').select('*').eq('email', email.trim());
+            if (error) {
+                return { success: false, message: error.message };
+            }
+            if (data.length > 0) {  // Changed from >= 0 to > 0
+                return { success: false, message: 'Email already exists' };
+            }
+            return { success: true, message: 'Email is valid' };
+
+        } catch (error) {
             return { success: false, message: error.message };
         }
-        if (data.length > 0) {  // Changed from >= 0 to > 0
-            return { success: false, message: 'Email already exists' };
-        }
-        return { success: true, message: 'Email is valid' };
-        
-       } catch (error) {
-           return { success: false, message: error.message };
-       }
     }
 
-    async validateUsername(username){
-        try{
+    async validateUsername(username) {
+        try {
+            let { data, error } = await supabase.from('Users').select('userName').ilike('userName', username.trim().toLowerCase());
 
-        }catch(error){
+            if (error) {
+                return { success: false, message: error.message };
+            }
+            if (data.length > 0) {
+                return { success: false, message: 'Username already exists' };
+            }
+            return { success: true, message: 'Username is valid' };
+
+        } catch (error) {
             return { success: false, message: error.message };
         }
     }
