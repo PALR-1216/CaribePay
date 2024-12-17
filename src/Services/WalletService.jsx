@@ -1,3 +1,4 @@
+import { supabase } from "../config/supabaseConfig";
 import authService from "./AuthService";
 
 class WalletService {
@@ -6,6 +7,7 @@ class WalletService {
         try {
             await authService.getUserWallet().then((response) => {
                 if (response.success) {
+                    console.log(response)
                     return response.wallet;
                 } else {
                     console.error(response.message);
@@ -22,13 +24,22 @@ class WalletService {
 
     async getBalance() {
         try {
-            const response = await authService.getUserWallet();
-            if (!response.success) {
-                throw new Error(response.message);
+            //get user id from supabase
+            let userID = (await supabase.auth.getUser()).data.user.id;
+            if (!userID) {
+                console.log('User not logged in');
+                return '0.00';
             }
 
-            const userWallet = response.wallet.userWallet;
-            const balanceResponse = await fetch(`http://10.0.0.12:8000/get-wallet-balance/${userWallet}`, {
+            //get user wallet from database
+            let { data, error } = await supabase.from('Wallets').select('*').eq('user_id', userID);
+            if (error) {
+                console.error('Error getting wallet:', error);
+                return '0.00';
+            }
+        
+            const userWallet = data[0].userWallet;
+            const balanceResponse = await fetch(`http://localhost:8000/get-wallet-balance/${userWallet}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -40,12 +51,12 @@ class WalletService {
                 throw new Error(`HTTP error! status: ${balanceResponse.status}`);
             }
 
-            const data = await balanceResponse.json();
+            const walltBalance = await balanceResponse.json();
             // return data.balance;
             return new Intl.NumberFormat('en-US', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
-            }).format(data.balance);
+            }).format(walltBalance.balance);
 
         } catch (error) {
             console.error('Error getting balance:', error);
