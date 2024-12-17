@@ -136,6 +136,17 @@ class AuthService {
     }
 
     async getSelectedUser(userId) {
+        try {
+            let { data, error } = await supabase.from('Users').select('*').eq('user_id', userId);
+            if (error) {
+                return { success: false, message: error.message };
+            }
+            return { success: true, user: data[0] };
+            
+        } catch (error) {
+            return { success: false, message: error.message };
+            
+        }
         
     }
 

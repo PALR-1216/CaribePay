@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { FiSearch, FiCamera, FiUsers } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import './SendFund.css';
@@ -7,6 +7,7 @@ import authService from '../../Services/AuthService';
 const SendFundsView = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleBack = () => {
@@ -31,100 +32,87 @@ const SendFundsView = () => {
       .toUpperCase();
   };
 
-  const getResults = async(query) => {
+  const getResults = useCallback(async(query) => {
     try {
       if (!query) {
         setSearchResults([]);
         return;
       }
 
-
+      setIsLoading(true);
       await authService.findUserByUserName(query).then((response) => {
         if (response.success) {
           setSearchResults(response.users);
         } else {
           console.error(response.message);
         }
-      })
-      
+      });
     } catch (error) {
       console.error(error);
-      
+    } finally {
+      setIsLoading(false);
     }
+  }, []);
 
-  };
+  const handleSearchChange = useCallback((e) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    const timeoutId = setTimeout(() => getResults(value), 300);
+    return () => clearTimeout(timeoutId);
+  }, [getResults]);
 
   return (
-    <div className="send-funds-container">
+    <div className="send-funds-view">
       <button className="back-button" onClick={handleBack}>
-        <span className="back-arrow">←</span>
-        Back to Dashboard
+        <span className="arrow-icon">←</span>
+        <span className="back-text">Go back</span>
       </button>
       
-      <h1 className="send-funds-title">Send Funds</h1>
-      
-      <div className="search-container">
-        <div className="search-wrapper">
-          
-          <input 
-            type="text"
-            placeholder="Search username or paste address"
-            className="search-input"
-            value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              getResults(e.target.value);
-            }}
-          />
-          <button onClick={handleCamera} className="scan-button">
-            <FiCamera className="camera-icon" />
-          </button>
-        </div>
+      <div className="search-section">
+        <input 
+          type="search"
+          placeholder="Search username"
+          className="search-input"
+          value={searchQuery}
+          onChange={handleSearchChange}
+          autoComplete="off"
+          autoCapitalize="off"
+        />
+        <button className="scan-button" onClick={handleCamera}>
+          <FiCamera />
+        </button>
       </div>
+
+      {isLoading && (
+        <div className="search-results">
+          <div className="loading-spinner"></div>
+        </div>
+      )}
 
       {searchQuery && searchResults.length > 0 && (
         <div className="search-results">
           {searchResults.map((user) => (
             <div
               key={user.id}
-              className="user-card"
+              className="user-item"
               onClick={() => handleUserSelect(user)}
             >
               <div className="user-avatar">
-                <span className="user-avatar-text">
-                  {getInitials(user.name)}
-                </span>
+                {getInitials(user.name)}
               </div>
-              <div className="user-info">
-                <div className="user-name">{user.name}</div>
-                <div className="user-username">@{user.userName}</div>
+              <div className="user-details">
+                <span className="user-name">{user.name}</span>
+                <span className="user-handle">@{user.userName}</span>
               </div>
             </div>
           ))}
         </div>
       )}
 
-      {searchQuery && searchResults.length === 0 && (
-        <div className="empty-state">
-          <div className="empty-state-icon">
-            <FiUsers />
-          </div>
-          <h3 className="empty-state-title">No users found</h3>
-          <p className="empty-state-description">
-            Try searching with a different username
-          </p>
-        </div>
-      )}
-
-      {!searchQuery && (
-        <div className="empty-state">
-          <div className="empty-state-icon">
-            <FiUsers />
-          </div>
-          <h3 className="empty-state-title">Search for users</h3>
-          <p className="empty-state-description">
-            Enter a username or paste an address to start sending funds
-          </p>
+      {searchQuery && searchResults.length === 0 && !isLoading && (
+        <div className="no-results">
+          <FiUsers className="no-results-icon" />
+          <p>No users found</p>
         </div>
       )}
     </div>

@@ -180,41 +180,49 @@
 }
 
 .back-button {
-  position: absolute;
-  top: 2rem;
-  left: 2rem;
-  background: rgba(255, 255, 255, 0.05);
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: rgba(255, 255, 255, 0.1);
   border: none;
-  color: #F3F4F6;
+  padding: 8px 16px;
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 1rem;
-  padding: 0.5rem;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  z-index: 10;
+  gap: 8px;
+  transition: background 0.3s ease;
+  backdrop-filter: blur(5px);
+  z-index: 1000; /* Ensure it's always on top */
+  animation: none; /* Remove any inherited animations */
+}
+
+.arrow-icon {
+  display: inline-block;
+  transition: transform 0.3s ease;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.back-text {
+  font-weight: 500;
+  white-space: nowrap; /* Prevent text wrapping */
 }
 
 .back-button:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  background: rgba(255, 255, 255, 0.15);
 }
 
-.back-button:hover .back-arrow {
+.back-button:hover .arrow-icon {
   transform: translateX(-4px);
-}
-
-.back-arrow {
-  font-size: 1.5rem;
-  transition: transform 0.3s ease;
 }
 
 @media (max-width: 768px) {
   .send-funds-container {
     padding: 16px;
-    padding-top: 3.5rem;
+    padding-top: 4rem;
   }
   
   .send-funds-title {
@@ -229,7 +237,8 @@
   }
 
   .search-wrapper {
-    padding: 2px 12px;
+    margin: 0 8px;
+    padding: 4px 12px;
   }
 
   .search-icon-wrapper {
@@ -238,8 +247,9 @@
   }
 
   .search-input {
-    font-size: 14px;
-    padding: 12px 0;
+    font-size: 16px; /* Better for mobile touch */
+    padding: 14px 0;
+    -webkit-appearance: none; /* Remove default iOS styling */
   }
 
   .scan-button {
@@ -251,8 +261,14 @@
   }
 
   .user-card {
-    padding: 12px;
-    background: rgba(255, 255, 255, 0.05);
+    margin: 8px;
+    padding: 16px;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+  }
+
+  .user-card:active {
+    transform: scale(0.98);
+    background: rgba(255, 255, 255, 0.1);
   }
 
   .user-avatar {
@@ -283,23 +299,32 @@
   }
 
   .back-button {
-    top: 1rem;
-    left: 1rem;
+    display: none; /* Hide the entire button on mobile */
   }
-  
-  .back-button span:not(.back-arrow) {
+
+  .send-funds-view {
+    padding-top: 20px; /* Reduce top padding since there's no back button */
+  }
+
+  .back-text {
     display: none;
+  }
+
+  .arrow-icon {
+    margin: 0;
+    font-size: 18px;
   }
 }
 
 @media (max-width: 380px) {
   .send-funds-container {
     padding: 12px;
-    padding-top: 3rem;
+    padding-top: 4.5rem;
   }
 
   .search-wrapper {
     padding: 0 8px;
+    margin: 0 4px;
   }
 
   .search-icon-wrapper {
@@ -314,6 +339,24 @@
 
   .camera-icon, .search-icon {
     font-size: 16px;
+  }
+
+  .user-card {
+    margin: 6px 4px;
+    padding: 12px;
+  }
+
+  .user-avatar {
+    width: 36px;
+    height: 36px;
+  }
+
+  .user-name {
+    font-size: 14px;
+  }
+
+  .user-username {
+    font-size: 12px;
   }
 
   .empty-state {
@@ -331,5 +374,207 @@
   .empty-state-description {
     font-size: 13px;
     max-width: 260px;
+  }
+}
+
+/* Add support for larger screens */
+@media (min-width: 1024px) {
+  .send-funds-container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .search-container {
+    max-width: 700px;
+  }
+
+  .user-card {
+    padding: 20px;
+  }
+
+  .user-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* Add dark mode support */
+@media (prefers-color-scheme: dark) {
+  .search-wrapper {
+    background: rgba(255, 255, 255, 0.07);
+  }
+
+  .user-card {
+    background: rgba(255, 255, 255, 0.07);
+  }
+
+  .user-card:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.send-funds-view {
+  background-color: #000;
+  min-height: 100vh;
+  padding: 16px;
+  padding-top: 80px;
+}
+
+.search-section {
+  position: relative;
+  margin-bottom: 20px;
+  max-width: 600px;
+  margin: 0 auto 30px;
+  padding: 0 16px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+}
+
+.search-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 18px 50px 18px 20px;
+  color: white;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 400;
+}
+
+.scan-button {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 50%;
+}
+
+.scan-button:hover {
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Add hover effect to the entire search section */
+.search-section:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.search-results {
+  margin-top: 16px;
+}
+
+.user-item {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.user-item:active {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #3773f5, #2b5cd9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  margin-right: 12px;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  color: white;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.user-handle {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 14px;
+}
+
+.loading-spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+.no-results {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 40px;
+}
+
+.no-results-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+  .search-section {
+    padding: 0 12px;
+  }
+
+  .search-input {
+    padding: 16px 45px 16px 16px;
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 768px) {
+  .send-funds-view {
+    padding: 24px;
+    padding-top: 100px;
+  }
+
+  .search-section {
+    max-width: 600px;
+    margin: 0 auto 30px;
+  }
+
+  .search-results {
+    max-width: 600px;
+    margin: 20px auto;
+  }
+
+  .user-item:hover {
+    background: rgba(255, 255, 255, 0.08);
   }
 }

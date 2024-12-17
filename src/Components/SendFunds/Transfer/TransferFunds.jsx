@@ -1,27 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import './TransferFunds.css';
 import authService from '../../../Services/AuthService';
 
-
 const TransferFunds = () => {
     const { userId } = useParams();
+    const navigate = useNavigate();
     const [amount, setAmount] = useState('');
     const [message, setMessage] = useState('');
     const [selectedUser, setSelectedUser] = useState(null);
 
     useEffect(() => {
-        // Fetch user details using userId
         const fetchUserDetails = async () => {
-            await authService.getUser(userId).then((response) => {
+            await authService.getSelectedUser(userId).then((response) => {
                 if (response.success) {
-                    console.log('User details:', response.user);
                     setSelectedUser(response.user);
                 } else {
                     console.error(response.message);
                 }
             });
-            
         };
 
         fetchUserDetails();
@@ -34,6 +31,10 @@ const TransferFunds = () => {
 
     return (
         <div className="send-funds-container">
+            <div className="back-navigation" onClick={() => navigate(-1)}>
+                <span className="back-arrow">←</span>
+                <span className="back-text">Go Back</span>
+            </div>
             {selectedUser && (
                 <>
                     <div className="user-details">
