@@ -1,50 +1,10 @@
-html, body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Inter', sans-serif;
-    background: #0d0d0d; /* A darker background for the entire page */
-    color: #ffffff;
-    overflow-x: hidden;
-}
-
 .send-funds-container {
     max-width: 480px;
-    margin: 40px auto;
+    margin: 0 auto;
     padding: 24px;
-    background: #1a1a1a; /* Dark container */
+    background: #1a1a1a;
     border-radius: 16px;
     color: #ffffff;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    animation: fadeIn 0.3s ease-in-out;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.back-navigation {
-    display: flex;
-    align-items: center;
-    margin-bottom: 24px;
-    cursor: pointer;
-    transition: opacity 0.2s;
-}
-
-.back-navigation:hover {
-    opacity: 0.8;
-}
-
-.back-arrow {
-    font-size: 24px;
-    margin-right: 8px;
-    color: #ffffff;
-}
-
-.back-text {
-    font-size: 16px;
-    color: #ffffff;
-    font-weight: 500;
 }
 
 .user-details {
@@ -56,16 +16,19 @@ html, body {
 .user-avatar {
     width: 56px;
     height: 56px;
-    background: linear-gradient(135deg, #2d2d2d, #3a3a3a);
+    background: #2d2d2d;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 24px;
     margin-right: 16px;
-    font-weight: 600;
-    color: #ffffff;
-    text-transform: uppercase;
+}
+
+.user-info {
+    flex: 1;
+    min-width: 0;
+    padding-right: 8px;
 }
 
 .user-info h2 {
@@ -73,13 +36,23 @@ html, body {
     font-size: 20px;
     font-weight: 600;
     letter-spacing: 0.5px;
+    line-height: 1.2;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .username {
-    margin: 4px 0 0;
+    margin: 2px 0 0;
     color: #8a8a8a;
     font-size: 14px;
     font-weight: 400;
+    line-height: 1.2;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .balance-section {
@@ -87,19 +60,12 @@ html, body {
     padding: 16px;
     border-radius: 12px;
     margin-bottom: 24px;
-    transition: background 0.2s;
-}
-
-.balance-section:hover {
-    background: #333333;
 }
 
 .balance-label {
     margin: 0;
     color: #8a8a8a;
     font-size: 14px;
-    font-weight: 500;
-    letter-spacing: 0.5px;
 }
 
 .balance-amount {
@@ -119,11 +85,6 @@ html, body {
     background: #2d2d2d;
     border-radius: 12px;
     padding: 16px;
-    transition: background 0.2s;
-}
-
-.amount-input-wrapper:hover {
-    background: #333333;
 }
 
 .amount-input {
@@ -132,23 +93,14 @@ html, body {
     border: none;
     color: #ffffff;
     font-size: 32px;
-    font-weight: 500;
     outline: none;
     padding-right: 70px;
-}
-
-.amount-input::-webkit-inner-spin-button, 
-.amount-input::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
 }
 
 .currency {
     position: absolute;
     right: 16px;
     color: #8a8a8a;
-    font-size: 16px;
-    font-weight: 500;
 }
 
 .message-section {
@@ -165,63 +117,54 @@ html, body {
     height: 100px;
     resize: none;
     outline: none;
-    font-size: 14px;
-    line-height: 20px;
-    transition: background 0.2s;
-}
-
-.message-input:hover {
-    background: #333333;
 }
 
 .send-button {
     width: 100%;
-    background: linear-gradient(135deg, #0052ff, #0043cc);
-    color: #ffffff;
+    background: #0052ff;
+    color: white;
     border: none;
     border-radius: 12px;
     padding: 16px;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
-    text-align: center;
+    transition: background-color 0.2s;
 }
 
 .send-button:hover {
-    background: linear-gradient(135deg, #0043cc, #0033aa);
-    transform: translateY(-1px);
-}
-
-.send-button:active {
-    transform: translateY(0px);
+    background: #0043cc;
 }
 
 .send-button:disabled {
     background: #2d2d2d;
     cursor: not-allowed;
-    opacity: 0.6;
+}
+
+.back-navigation {
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+    cursor: pointer;
+}
+
+.back-arrow {
+    font-size: 24px;
+    margin-right: 8px;
+}
+
+.back-text {
+    font-size: 16px;
+    color: #ffffff;
 }
 
 @media (max-width: 480px) {
     .send-funds-container {
         border-radius: 0;
-        margin: 0;
-        min-height: 100vh;
         padding: 16px;
     }
 
     .amount-input {
         font-size: 24px;
-    }
-
-    .back-navigation {
-        margin-bottom: 16px;
-    }
-
-    .user-avatar {
-        width: 48px;
-        height: 48px;
-        font-size: 20px;
     }
 }

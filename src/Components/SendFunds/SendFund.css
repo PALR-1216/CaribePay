@@ -509,17 +509,27 @@
 .user-details {
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  flex: 1;
+  align-items: flex-start; /* Add this to ensure left alignment */
 }
 
 .user-name {
   color: white;
   font-weight: 500;
-  margin-bottom: 4px;
+  margin-bottom: 4px; /* Increased for better spacing */
+  font-size: 16px;
+  line-height: 1.2;
+  text-align: left; /* Add this to ensure left alignment */
+  width: 100%; /* Add this to ensure full width */
 }
 
 .user-handle {
   color: rgba(255, 255, 255, 0.5);
   font-size: 14px;
+  line-height: 1.2;
+  text-align: left; /* Add this to ensure left alignment */
+  width: 100%; /* Add this to ensure full width */
 }
 
 .loading-spinner {
@@ -565,7 +575,7 @@
   }
 
   .search-section {
-    max-width: 600px;
+      max-width: 600px;
     margin: 0 auto 30px;
   }
 
