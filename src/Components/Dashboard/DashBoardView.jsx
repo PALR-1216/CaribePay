@@ -9,7 +9,7 @@ import 'react-loading-skeleton/dist/skeleton.css'
 export default function DashBoardView() {
     const [balance, setBalance] = useState(null);
     const navigate = useNavigate();
-    const videoPath = "../../assets/waves.mp4";
+    const videoPath = "https://rdpodrjwlivqzafd.public.blob.vercel-storage.com/waves-i0zcrOAzQB7I8ULRxdj8huxa1N1HJE.mp4";
 
     useEffect(() => {
         getUserBalance();
@@ -81,7 +81,7 @@ export default function DashBoardView() {
 
             <div className="balance-section">
                 <img 
-                    src="./src/assets/waves.mp4" 
+                    src={videoPath} 
                     alt="" 
                     className="balance-background"
                 />
