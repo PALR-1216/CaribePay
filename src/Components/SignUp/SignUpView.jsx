@@ -1,46 +1,80 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './SignUp.css';
 import authService from '../../Services/AuthService';
 
 export default function SignUpView() {
+  const navigate = useNavigate();
+  const [showPopup, setShowPopup] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
-    dateOfBirth: '',
     username: '',
     password: ''
   });
 
   const [errors, setErrors] = useState({
     email: '',
-    username: '',
-    dateOfBirth: ''
+    username: ''
   });
 
   const [isValid, setIsValid] = useState({
     email: false,
     username: false,
-    dateOfBirth: false,
     password: false
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('Form submission started');
     
-    // Validate all fields before submission
-    const emailError = await validateEmail(formData.email);
-    const usernameError = await validateUsername(formData.username);
-    const dateError = validateDateOfBirth(formData.dateOfBirth);
-    
-    if (!emailError && !usernameError && !dateError && formData.password.length >= 8) {
-      // Proceed with form submission
-      try {
-        await authService.signUp(formData);
-        // Handle successful signup
-      } catch (error) {
-        console.error('Signup error:', error);
+    if (!isFormValid() || !formData.password.length >= 8) {
+      console.log('Form validation failed');
+      setErrors(prev => ({
+        ...prev,
+        general: 'Please fill in all required fields correctly.'
+      }));
+      return;
+    }
+
+    setIsSubmitting(true);
+    console.log('Submitting form data:', formData);
+
+    try {
+      const response = await authService.signUp({
+        email: formData.email,
+        password: formData.password,
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        username: formData.username.trim()
+      });
+
+      console.log('Signup response:', response);
+
+      if (response.success) {
+        setErrors({});
+        setShowPopup(true);
+        setTimeout(() => {
+          setShowPopup(false);
+          navigate('/login');
+        }, 3000);
+      } else {
+        setErrors(prev => ({
+          ...prev,
+          general: response.message || 'Failed to create account. Please try again.'
+        }));
       }
+    } catch (error) {
+      console.error('Form submission error:', error);
+      setErrors(prev => ({
+        ...prev,
+        general: 'An unexpected error occurred. Please try again.'
+      }));
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -79,23 +113,6 @@ export default function SignUpView() {
     }
   };
 
-  const validateDateOfBirth = (dateString) => {
-    const today = new Date();
-    const birthDate = new Date(dateString);
-    const age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    
-    if (birthDate > today) {
-      return "Date of birth cannot be in the future";
-    }
-    
-    if (age < 18 || (age === 18 && monthDiff < 0)) {
-      return "You must be at least 18 years old";
-    }
-    
-    return "";
-  };
-
   const handleChange = async (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -109,9 +126,6 @@ export default function SignUpView() {
       error = await validateEmail(value);
     } else if (name === 'username') {
       error = await validateUsername(value);
-    } else if (name === 'dateOfBirth') {
-      error = validateDateOfBirth(value);
-      setIsValid(prev => ({ ...prev, dateOfBirth: !error }));
     } else if (name === 'password') {
       setIsValid(prev => ({ ...prev, password: value.length >= 8 }));
     }
@@ -123,12 +137,20 @@ export default function SignUpView() {
   };
 
   const isFormValid = () => {
-    return isValid.email && isValid.username && isValid.dateOfBirth && 
-           isValid.password && !errors.email && !errors.username && !errors.dateOfBirth;
+    return isValid.email && isValid.username && 
+          isValid.password && !errors.email && !errors.username;
   };
 
   return (
     <div className="signup-container">
+      {showPopup && (
+        <div className="success-popup">
+          <div className="popup-content">
+            <h3>Account Created Successfully!</h3>
+            <p>Please log in to continue</p>
+          </div>
+        </div>
+      )}
       <div className="signup-card">
         <div className="signup-header">
           <h1>Create Account</h1>
@@ -172,29 +194,16 @@ export default function SignUpView() {
             {errors.email && <span className="error-message">{errors.email}</span>}
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label>Date of Birth</label>
-              <input
-                type="date"
-                name="dateOfBirth"
-                onChange={handleChange}
-                required
-              />
-              {errors.dateOfBirth && <span className="error-message">{errors.dateOfBirth}</span>}
-            </div>
-
-            <div className="form-group">
-              <label>Username</label>
-              <input
-                type="text"
-                name="username"
-                placeholder="Choose a username"
-                onChange={handleChange}
-                required
-              />
-              {errors.username && <span className="error-message">{errors.username}</span>}
-            </div>
+          <div className="form-group">
+            <label>Username</label>
+            <input
+              type="text"
+              name="username"
+              placeholder="Choose a username"
+              onChange={handleChange}
+              required
+            />
+            {errors.username && <span className="error-message">{errors.username}</span>}
           </div>
 
           <div className="form-group">
@@ -208,12 +217,18 @@ export default function SignUpView() {
             />
           </div>
 
+          {errors.general && (
+            <div className="error-message general-error">
+              {errors.general}
+            </div>
+          )}
+
           <button 
             type="submit" 
-            disabled={!isFormValid()}
-            className={!isFormValid() ? "button-disabled" : ""}
+            disabled={!isFormValid() || isSubmitting}
+            className={(!isFormValid() || isSubmitting) ? "button-disabled" : ""}
           >
-            Create Account
+            {isSubmitting ? 'Creating Account...' : 'Create Account'}
           </button>
         </form>
       </div>

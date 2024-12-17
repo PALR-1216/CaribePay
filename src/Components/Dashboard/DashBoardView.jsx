@@ -9,6 +9,7 @@ import 'react-loading-skeleton/dist/skeleton.css'
 export default function DashBoardView() {
     const [balance, setBalance] = useState(null);
     const navigate = useNavigate();
+    const videoPath = "../../assets/waves.mp4";
 
     useEffect(() => {
         getUserBalance();
@@ -79,26 +80,28 @@ export default function DashBoardView() {
             </header>
 
             <div className="balance-section">
-                <div className="balance-label">Available Balance</div>
-                <div className="total-balance">
-                    <div className="balance-amount">
-                        <span className="currency-symbol">$</span>
+                <img 
+                    src="./src/assets/waves.mp4" 
+                    alt="" 
+                    className="balance-background"
+                />
+                <div className="balance-content">
+                    <div className="balance-label">Available Balance</div>
+                    <div className="total-balance">
                         {balance ? (
-                            <span className="balance-value">{Number(balance).toLocaleString('en-US', {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2
-                            })}</span>
+                            <div className="balance-amount">
+                                <span className="currency-symbol">$</span>
+                                <span className="balance-value">
+                                    {Number(balance).toLocaleString('en-US', {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2
+                                    })}
+                                </span>
+                            </div>
                         ) : (
                             <Skeleton width={200} height={60} />
                         )}
                     </div>
-                    {/* <span className="balance-trend">
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                            <path d="M8 3.33337V12.6667M8 3.33337L4 7.33337M8 3.33337L12 7.33337" 
-                        stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                        2.4%
-                    </span> */}
                 </div>
             </div>
 
