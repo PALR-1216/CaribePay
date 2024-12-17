@@ -99,7 +99,7 @@ export default function DashBoardView() {
                                 </span>
                             </div>
                         ) : (
-                            <Skeleton width={200} height={60} />
+                            "Loading..."
                         )}
                     </div>
                 </div>

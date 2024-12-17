@@ -135,11 +135,16 @@ class AuthService {
         }
     }
 
+    async getSelectedUser(userId) {
+        
+    }
+
     // Removed getUserWallet method
 
     async findUserByUserName(userName) {
         try {
-            let { data, error } = await supabase.from('Users').select('*').eq('userName', userName);
+            let { data, error } = await supabase.from('Users').select('*').ilike('userName', `%${userName}%`);
+
             if (error) {
                 return { success: false, message: error.message };
             }

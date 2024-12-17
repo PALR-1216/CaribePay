@@ -17,6 +17,20 @@ const SendFundsView = () => {
     console.log('Camera clicked');
   };
 
+  const handleUserSelect = (user) => {
+    // Navigate to transfer page with selected user
+    console.log('Selected user:', user);
+    navigate(`/transfer/${user.user_id}`);
+  };
+
+  const getInitials = (name) => {
+    return name
+      .split(' ')
+      .map(word => word[0])
+      .join('')
+      .toUpperCase();
+  };
+
   const getResults = async(query) => {
     try {
       if (!query) {
@@ -24,9 +38,9 @@ const SendFundsView = () => {
         return;
       }
 
+
       await authService.findUserByUserName(query).then((response) => {
         if (response.success) {
-          console.log(response.users);
           setSearchResults(response.users);
         } else {
           console.error(response.message);
@@ -67,6 +81,40 @@ const SendFundsView = () => {
           </button>
         </div>
       </div>
+
+      {searchQuery && searchResults.length > 0 && (
+        <div className="search-results">
+          {searchResults.map((user) => (
+            <div
+              key={user.id}
+              className="user-card"
+              onClick={() => handleUserSelect(user)}
+            >
+              <div className="user-avatar">
+                <span className="user-avatar-text">
+                  {getInitials(user.name)}
+                </span>
+              </div>
+              <div className="user-info">
+                <div className="user-name">{user.name}</div>
+                <div className="user-username">@{user.userName}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {searchQuery && searchResults.length === 0 && (
+        <div className="empty-state">
+          <div className="empty-state-icon">
+            <FiUsers />
+          </div>
+          <h3 className="empty-state-title">No users found</h3>
+          <p className="empty-state-description">
+            Try searching with a different username
+          </p>
+        </div>
+      )}
 
       {!searchQuery && (
         <div className="empty-state">

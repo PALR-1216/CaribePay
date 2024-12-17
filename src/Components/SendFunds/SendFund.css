@@ -13,7 +13,6 @@
   animation: fadeIn 0.4s ease-out;
   padding: 24px;
   min-height: 100vh;
-  background-color: #0a0b0d;
   color: #ffffff;
   position: relative;
   padding-top: 4rem;
@@ -36,14 +35,16 @@
 .search-wrapper {
   display: flex;
   align-items: center;
-  background-color: #1e2026;
-  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
   padding: 4px 16px;
   transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
 }
 
 .search-wrapper:focus-within {
-  box-shadow: 0 0 0 2px #3773f5;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 2px rgba(55, 115, 245, 0.3);
 }
 
 .search-icon-wrapper {
@@ -92,6 +93,62 @@
   font-size: 20px;
 }
 
+.search-results {
+  animation: fadeIn 0.4s ease-out;
+  max-width: 600px;
+  margin: 20px auto;
+}
+
+.user-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+}
+
+.user-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+}
+
+.user-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3773f5, #2b5cd9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16px;
+}
+
+.user-avatar-text {
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.user-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.user-username {
+  font-size: 14px;
+  color: #616771;
+}
+
 .empty-state {
   animation: fadeIn 0.4s ease-out 0.3s both;
   display: flex;
@@ -126,7 +183,7 @@
   position: absolute;
   top: 2rem;
   left: 2rem;
-  background: none;
+  background: rgba(255, 255, 255, 0.05);
   border: none;
   color: #F3F4F6;
   cursor: pointer;
@@ -141,8 +198,8 @@
 }
 
 .back-button:hover {
-  background: rgba(59, 130, 246, 0.1);
-  color: #3B82F6;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
 }
 
 .back-button:hover .back-arrow {
@@ -187,6 +244,24 @@
 
   .scan-button {
     padding: 6px;
+  }
+
+  .search-results {
+    padding: 0 8px;
+  }
+
+  .user-card {
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .user-avatar-text {
+    font-size: 16px;
   }
 
   .empty-state {
