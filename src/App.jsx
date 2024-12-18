@@ -8,7 +8,7 @@ import SignUpView from './Components/SignUp/SignUpView';
 import authService from './Services/AuthService';
 import ReceiveView from './Components/ReceiveFunds/ReceiveView';
 import SendFundsView from './Components/SendFunds/SendFundsView';
-import TransferFunds from './Components/SendFunds/Transfer/transferFunds';
+import TransferFunds from './Components/SendFunds/Transfer/TransferFunds';
 
 
 function App() {
