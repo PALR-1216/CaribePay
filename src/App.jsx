@@ -8,7 +8,9 @@ import SignUpView from './Components/SignUp/SignUpView';
 import authService from './Services/AuthService';
 import ReceiveView from './Components/ReceiveFunds/ReceiveView';
 import SendFundsView from './Components/SendFunds/SendFundsView';
-import TransferFunds from './Components/SendFunds/Transfer/TransferFunds';
+import TransferFunds from './Components/Transfer/TransferFunds';
+import walletService from './Services/WalletService';
+
 
 
 function App() {
@@ -19,16 +21,16 @@ function App() {
     // Fetch balance from your wallet or API
     const fetchBalance = async () => {
       // Add your balance fetching logic here
-      // For example: const balance = await walletService.getBalance();
-      // setBalance(balance);
+      const balance = await walletService.getBalance()
+      setBalance(balance);
     };
 
-    fetchBalance();
     authService.verfiyAuth().then((response) => {
       if (!response.success) {
         navigate('/login');
       } else {
         navigate('/dashboard');
+        fetchBalance();
       }
     });
   }, []);
@@ -37,12 +39,12 @@ function App() {
       {/* Navigation component will go here */}
       <Routes>
         <Route path="/login"  element={<Login />} />
-        <Route path="/dashboard" element={<DashBoard />} />
+        <Route path="/dashboard" element={<DashBoard/>} />
         <Route path="/transactions" element={<TransactionView />} />
         <Route path="/signUp" element={<SignUpView />} />
         <Route path="/receiveFunds" element={<ReceiveView />} />
         <Route path="/sendFunds" element={<SendFundsView />} />
-        <Route path="/transfer/:userId" element={<TransferFunds />} />
+        <Route path="/transfer/:userId" element={<TransferFunds currentBalance={balance} />} />
       </Routes>
     </div>
   );

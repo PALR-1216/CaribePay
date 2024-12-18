@@ -64,6 +64,28 @@ class WalletService {
         }
     }
 
+    async createWallet(userID) {
+        try {
+            const walletResponse = await fetch('http://localhost:8000/create-costumer-wallet', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                },
+            });
+
+            if (!walletResponse.ok) {
+                throw new Error(`HTTP error! status: ${walletResponse.status}`);
+            }
+
+            const walletData = await walletResponse.json();
+            
+        } catch (error) {
+            console.error('Error creating wallet:', error);
+            
+        }
+    }
+
 
 
 }
