@@ -42,13 +42,13 @@ const TransferFunds = () => {
         }
     };
 
-    if (isLoading && !selectedUser) {
-        return (
-            <div className="send-funds-container">
-                <div className="loading-spinner">Loading...</div>
-            </div>
-        );
-    }
+    // if (isLoading && !selectedUser) {
+    //     return (
+    //         <div className="send-funds-container">
+    //             <div className="loading-spinner">Loading...</div>
+    //         </div>
+    //     );
+    // }
 
     return (
         <div className="send-funds-container">
