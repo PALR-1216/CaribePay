@@ -20,7 +20,6 @@ const SendFundsView = () => {
 
   const handleUserSelect = (user) => {
     // Navigate to transfer page with selected user
-    console.log('Selected user:', user);
     navigate(`/transfer/${user.user_id}`);
   };
 

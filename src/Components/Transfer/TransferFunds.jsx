@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './TransferFunds.css';
 import authService from '../../Services/AuthService';
+import walletService from '../../Services/WalletService';
+import { supabase } from '../../config/supabaseConfig';
 
 const TransferFunds = ({currentBalance}) => {
     const { userId } = useParams();
@@ -96,12 +98,31 @@ const TransferFunds = ({currentBalance}) => {
         try {
             setIsLoading(true);
             // Implement send logic here
-            console.log('Sending', amount, 'USDC to', selectedUser.userName);
+            console.log('Sending', amount, 'USDC to', selectedUser.userName, 'with id of ', selectedUser.user_id);
+            // i need to pass my id the selected user wallet, the amount 
+            const myUserID = (await supabase.auth.getUser()).data.user.id;
             // Add actual transfer logic
+            getDataForTransfer();
         } catch (error) {
             console.error('Transfer failed:', error);
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const getDataForTransfer = async () => {
+        try {
+            setIsLoading(true);
+            const senderWallet = await walletService.getUserWallet((await supabase.auth.getUser()).data.user.id)
+            const receiverWallet = await walletService.getUserWallet(selectedUser.user_id);
+            await walletService.transferFunds(senderWallet.wallet, receiverWallet.wallet, formattedAmount).then((response) => {
+                console.log('Transfer response:', response);
+            });
+            setIsLoading(false);
+
+        } catch (error) {
+            console.error('Error getting data for transfer:', error);
+            throw error;
         }
     };
 

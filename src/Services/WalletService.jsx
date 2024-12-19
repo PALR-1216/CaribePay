@@ -2,21 +2,43 @@ import { supabase } from "../config/supabaseConfig";
 import authService from "./AuthService";
 
 class WalletService {
+    DEV_ENCRYPTION_PASSWORD='Z9g!N3t^bQ%XrFs2';
 
-    async getUserWallet() {
+    async getUserWallet(userID) {
         try {
-            await authService.getUserWallet().then((response) => {
-                if (response.success) {
-                    console.log(response)
-                    return response.wallet;
-                } else {
-                    console.error(response.message);
-                }
-            });
+            const { data, error } = await supabase
+                .from('Wallets')
+                .select('userWallet')
+                .eq('user_id', userID)
+                .single();
+
+            if (error) {
+                console.error('Error fetching wallet:', error.message);
+                return {
+                    success: false,
+                    error: error.message
+                };
+            }
+
+            if (!data) {
+                console.log('No wallet found for user:', userID);
+                return {
+                    success: false,
+                    error: 'Wallet not found'
+                };
+            }
+
+            return {
+                success: true,
+                wallet: data.userWallet
+            };
             
-        } catch (e) {
-            console.error(e);
-            
+        } catch (error) {
+            console.error('Unexpected error fetching wallet:', error);
+            return {
+                success: false,
+                error: 'Unexpected error occurred'
+            };
         }
     }
 
@@ -79,6 +101,18 @@ class WalletService {
             }
 
             const walletData = await walletResponse.json();
+            //i need to encry and decepry the private key 
+
+
+            //save wallet to database
+            const { data, error } = await supabase.from('Wallets').insert([
+                {
+                    user_id: userID,
+                    publicKey: walletData.publicKey,
+                    privateKey: walletData.privateKey,
+                }
+            ]);
+
             
         } catch (error) {
             console.error('Error creating wallet:', error);
@@ -86,7 +120,46 @@ class WalletService {
         }
     }
 
+    async transferFunds(senderWallet, receiverWallet, amount) {
+        try {
+            const response = await fetch('http://localhost:8000/transfer-funds', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                },
+                body: JSON.stringify({
+                    userID: (await supabase.auth.getUser()).data.user.id,
+                    fromPublicKey: senderWallet,
+                    toPublicKey: receiverWallet,
+                    amount: amount,
+                }),
+            });
 
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            return result;
+
+        } catch (error) {
+            console.error('Error transferring funds:', error);
+            
+        }
+    }
+
+    async encryptPrivateKey(privateKey) {
+        //encrypt private key
+        const password = DEV_ENCRYPTION_PASSWORD;
+        
+    }
+
+
+
+    async decryptPrivateKey(encryptedPrivateKey) {
+
+    }
 
 }
 
