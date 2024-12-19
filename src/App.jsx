@@ -10,6 +10,7 @@ import ReceiveView from './Components/ReceiveFunds/ReceiveView';
 import SendFundsView from './Components/SendFunds/SendFundsView';
 import TransferFunds from './Components/Transfer/TransferFunds';
 import walletService from './Services/WalletService';
+import DepositFunds from './Components/DepositFunds/DepositFunds';
 
 
 
@@ -45,6 +46,7 @@ function App() {
         <Route path="/receiveFunds" element={<ReceiveView />} />
         <Route path="/sendFunds" element={<SendFundsView />} />
         <Route path="/transfer/:userId" element={<TransferFunds currentBalance={balance} />} />
+        <Route path='/deposit' element={<DepositFunds />} />
       </Routes>
     </div>
   );

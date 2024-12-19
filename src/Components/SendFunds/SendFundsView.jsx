@@ -3,6 +3,7 @@ import { FiSearch, FiCamera, FiUsers } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import './SendFund.css';
 import authService from '../../Services/AuthService';
+import Webcam from "react-webcam";
 
 const SendFundsView = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -16,6 +17,10 @@ const SendFundsView = () => {
 
   const handleCamera = () => {
     console.log('Camera clicked');
+    const videoConstraints = {
+      facingMode: { exact: "user" }
+    };
+    
   };
 
   const handleUserSelect = (user) => {

@@ -74,7 +74,7 @@ export default function DashBoardView() {
             <header className="dashboard-header">
                 <h1 className="app-name">CaribePay</h1>
                 <div className="header-buttons">
-                    <button className="deposit-button">+ Deposit</button>
+                    <button onClick={ () => navigate('/deposit')} className="deposit-button">+ Deposit</button>
                     <button className="logout-button" onClick={handleLogout}>Logout</button>
                 </div>
             </header>
