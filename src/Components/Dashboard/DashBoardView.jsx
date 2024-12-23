@@ -13,7 +13,6 @@ export default function DashBoardView() {
 
     useEffect(() => {
         getUserBalance();
-
     }, []);
     
     const handleLogout = () => {

@@ -54,14 +54,14 @@ class WalletService {
             }
 
             //get user wallet from database
-            let { data, error } = await supabase.from('Wallets').select('*').eq('user_id', userID);
+            let { data, error } = await supabase.from('Public_keys').select('*').eq('user_id', userID);
             if (error) {
                 console.error('Error getting wallet:', error);
                 return '0.00';
             }
         
-            const userWallet = data[0].userWallet;
-            const balanceResponse = await fetch(`http://localhost:8000/get-wallet-balance/${userWallet}`, {
+            const userWallet = data[0].public_key
+            const balanceResponse = await fetch(`http://localhost:8000/api/balance/${userWallet}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -86,9 +86,9 @@ class WalletService {
         }
     }
 
-    async createWallet(userID) {
+    async createWallet() {
         try {
-            const walletResponse = await fetch('http://localhost:8000/create-costumer-wallet', {
+            const walletResponse = await fetch('http://localhost:8000/api/createWallet', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -102,16 +102,8 @@ class WalletService {
 
             const walletData = await walletResponse.json();
             //i need to encry and decepry the private key 
+            return walletData;
 
-
-            //save wallet to database
-            const { data, error } = await supabase.from('Wallets').insert([
-                {
-                    user_id: userID,
-                    publicKey: walletData.publicKey,
-                    privateKey: walletData.privateKey,
-                }
-            ]);
 
             
         } catch (error) {

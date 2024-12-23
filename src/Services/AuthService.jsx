@@ -1,4 +1,5 @@
 import { supabase } from "../config/supabaseConfig";
+import walletService from "./WalletService";
 
 class AuthService {
 
@@ -47,6 +48,16 @@ class AuthService {
 
             if (profileError) throw new Error(profileError.message);
 
+            await walletService.createWallet().then(async(response) => {
+                if (response) {
+                    console.log('Wallet created successfully');
+                    await this.storeUserKeys(authData.user.id, response.result);
+                } else {
+                    console.error('Error creating wallet');
+                }
+            });
+
+
             // 3. Create default wallet - Commented out for now
             /*
             const { error: walletError } = await supabase
@@ -80,29 +91,81 @@ class AuthService {
         }
     }
 
-    async createProfile(userID, email) {
+    async storeUserKeys(userID, walletKeys) {
         try {
-            const { data, error } = await supabase.from('Users').insert([
+            // Store public key
+            const { error: publicKeyError } = await supabase.from('Public_keys').insert([
                 {
-                    user_id: user.id,
-                    email: user.email,
-                    first_name: '',
-                    last_name: '',
-                    userName: '',
-                    phone_number: '',
                     created_at: new Date(),
-                    updated_at: new Date(),
+                    user_id: userID,
+                    public_key: walletKeys.publicKey,
                 },
             ]);
-        } catch (error) {
-            return { success: false, message: error.message };
-        }
 
-        if (error) {
-            return { success: false, message: error.message };
+            if (publicKeyError) {
+                console.error('Error storing public key:', publicKeyError);
+                return {
+                    success: false,
+                    message: publicKeyError.message
+                };
+            }
+            console.log('User public key stored successfully');
+
+            // Store private key
+            const { error: privateKeyError } = await supabase.from('Private_keys').insert([
+                {
+                    created_at: new Date(),
+                    user_id: userID,
+                    private_key: walletKeys.secretKey,
+                },
+            ]);
+
+            if (privateKeyError) {
+                console.error('Error storing private key:', privateKeyError);
+                return {
+                    success: false,
+                    message: privateKeyError.message
+                };
+            }
+            console.log('User private key stored successfully');
+
+            return {
+                success: true,
+                message: 'Keys stored successfully'
+            };
+            
+        } catch (error) {
+            console.error('Error storing user keys:', error);
+            return {
+                success: false,
+                message: 'Error storing user keys'
+            };
         }
-        return { success: true, user: data[0] };
     }
+
+    // async createProfile(userID, email) {
+    //     try {
+    //         const { data, error } = await supabase.from('Users').insert([
+    //             {
+    //                 user_id: user.id,
+    //                 email: user.email,
+    //                 first_name: '',
+    //                 last_name: '',
+    //                 userName: '',
+    //                 phone_number: '',
+    //                 created_at: new Date(),
+    //                 updated_at: new Date(),
+    //             },
+    //         ]);
+    //     } catch (error) {
+    //         return { success: false, message: error.message };
+    //     }
+
+    //     if (error) {
+    //         return { success: false, message: error.message };
+    //     }
+    //     return { success: true, user: data[0] };
+    // }
 
     async login(email, password) {
         const { data, error } = await supabase.auth.signInWithPassword({
