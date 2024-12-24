@@ -112,47 +112,15 @@ class WalletService {
         }
     }
 
-    async transferFunds(senderWallet, receiverWallet, amount) {
+    async transferFunds(senderID, receiverWallet, amount) {
         try {
-            const response = await fetch('http://localhost:8000/transfer-funds', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*',
-                },
-                body: JSON.stringify({
-                    userID: (await supabase.auth.getUser()).data.user.id,
-                    fromPublicKey: senderWallet,
-                    toPublicKey: receiverWallet,
-                    amount: amount,
-                }),
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const result = await response.json();
-            return result;
+            console.log(senderID);
 
         } catch (error) {
             console.error('Error transferring funds:', error);
             
         }
     }
-
-    async encryptPrivateKey(privateKey) {
-        //encrypt private key
-        const password = DEV_ENCRYPTION_PASSWORD;
-        
-    }
-
-
-
-    async decryptPrivateKey(encryptedPrivateKey) {
-
-    }
-
 }
 
 const walletService = new WalletService();

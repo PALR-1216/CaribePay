@@ -101,8 +101,12 @@ const TransferFunds = ({currentBalance}) => {
             console.log('Sending', amount, 'USDC to', selectedUser.userName, 'with id of ', selectedUser.user_id);
             // i need to pass my id the selected user wallet, the amount 
             const myUserID = (await supabase.auth.getUser()).data.user.id;
-            // Add actual transfer logic
-            getDataForTransfer();
+            //get the selected User Wallet 
+            const selectedUserWallet = await getSelectedUserPublicWallet(selectedUser.user_id)
+            await walletService.transferFunds(myUserID, selectedUserWallet, amount).then((response) => {
+                console.log(response)
+            })
+
         } catch (error) {
             console.error('Transfer failed:', error);
         } finally {
@@ -110,21 +114,34 @@ const TransferFunds = ({currentBalance}) => {
         }
     };
 
-    const getDataForTransfer = async () => {
+    async function getSelectedUserPublicWallet(selectedUserID) {
         try {
-            setIsLoading(true);
-            const senderWallet = await walletService.getUserWallet((await supabase.auth.getUser()).data.user.id)
-            const receiverWallet = await walletService.getUserWallet(selectedUser.user_id);
-            await walletService.transferFunds(senderWallet.wallet, receiverWallet.wallet, formattedAmount).then((response) => {
-                console.log('Transfer response:', response);
-            });
-            setIsLoading(false);
-
+            const {data, error} = await supabase.from('Public_keys').select('*').eq('user_id', selectedUserID)
+            return data[0].public_key
+            
         } catch (error) {
-            console.error('Error getting data for transfer:', error);
-            throw error;
+            console.log("Error in getting selected user")
+            
         }
-    };
+
+    }
+
+    // const getDataForTransfer = async () => {
+    //     try {
+    //         setIsLoading(true);
+    //         // const senderWallet = await walletService.getUserWallet((await supabase.auth.getUser()).data.user.id)
+    //         const receiverWallet = await walletService.getUserWallet(selectedUser.user_id);
+    //         console.log(receiverWallet)
+    //         // await walletService.transferFunds((await supabase.auth.getUser()).data.user.id, receiverWallet.wallet, formattedAmount).then((response) => {
+    //         //     console.log('Transfer response:', response);
+    //         // });
+    //         setIsLoading(false);
+
+    //     } catch (error) {
+    //         console.error('Error getting data for transfer:', error);
+    //         throw error;
+    //     }
+    // };
 
     return (
         <div className="transfer-ui-container">
@@ -147,7 +164,7 @@ const TransferFunds = ({currentBalance}) => {
     
                     <div className="balance-section">
                         <img 
-                            src="https://rdpodrjwlivqzafd.public.blob.vercel-storage.com/waves2-iShUfYVgk42g7JOpET0TxeyUowlDn0.mp4"
+                            // src="https://rdpodrjwlivqzafd.public.blob.vercel-storage.com/waves2-iShUfYVgk42g7JOpET0TxeyUowlDn0.mp4"
                             alt="Balance background"
                             className="balance-background"
                         />
