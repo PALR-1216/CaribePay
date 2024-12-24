@@ -1,5 +1,6 @@
 import { supabase } from "../config/supabaseConfig";
 import authService from "./AuthService";
+import Swal from 'sweetalert2';
 
 class WalletService {
     DEV_ENCRYPTION_PASSWORD='Z9g!N3t^bQ%XrFs2';
@@ -114,11 +115,53 @@ class WalletService {
 
     async transferFunds(senderID, receiverWallet, amount) {
         try {
-            console.log(senderID);
+            console.log("senderID", senderID, "receiverWallet", receiverWallet, "amount", amount);
+            const transferResponse = await fetch('http://localhost:8000/api/transfer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                },
+                body: JSON.stringify({
+                    senderID,
+                    receiverWallet,
+                    amount
+                }),
+            });
 
+            const transferData = await transferResponse.json();
+            if(transferData.success){
+                const { signature, confirmation } = transferData;
+                await Swal.fire({
+                    title: 'Transaction Successful!',
+                    html: `
+                        <div class="transaction-receipt">
+                            <p><strong>Amount:</strong> ${amount} USDC</p>
+                            <p><strong>Transaction Signature:</strong> ${transferData.result.signature}</p>
+                            <p><strong>Status:</strong> Confirmed</p>
+                        </div>
+                    `,
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                });
+                window.location.reload();
+                return { signature, confirmation };
+            } else {
+                await Swal.fire({
+                    title: 'Transaction Failed',
+                    text: transferData.error || 'An error occurred during the transaction',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
         } catch (error) {
             console.error('Error transferring funds:', error);
-            
+            await Swal.fire({
+                title: 'Error',
+                text: 'Failed to process the transaction',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
         }
     }
 }
