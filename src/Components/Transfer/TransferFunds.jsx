@@ -103,9 +103,7 @@ const TransferFunds = ({currentBalance}) => {
             const myUserID = (await supabase.auth.getUser()).data.user.id;
             //get the selected User Wallet 
             const selectedUserWallet = await getSelectedUserPublicWallet(selectedUser.user_id)
-            await walletService.transferFunds(myUserID, selectedUserWallet, amount).then((response) => {
-                console.log(response)
-            })
+            await walletService.transferFunds(myUserID, selectedUser.user_id, selectedUserWallet, amount)
 
         } catch (error) {
             console.error('Transfer failed:', error);

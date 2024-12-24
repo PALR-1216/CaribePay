@@ -1,6 +1,8 @@
 import { supabase } from "../config/supabaseConfig";
 import authService from "./AuthService";
 import Swal from 'sweetalert2';
+import emailService from "./EmailService";
+
 
 class WalletService {
     DEV_ENCRYPTION_PASSWORD='Z9g!N3t^bQ%XrFs2';
@@ -113,7 +115,7 @@ class WalletService {
         }
     }
 
-    async transferFunds(senderID, receiverWallet, amount) {
+    async transferFunds(senderID,receiverID, receiverWallet, amount) {
         try {
             console.log("senderID", senderID, "receiverWallet", receiverWallet, "amount", amount);
             const transferResponse = await fetch('http://localhost:8000/api/transfer', {
@@ -144,7 +146,12 @@ class WalletService {
                     icon: 'success',
                     confirmButtonText: 'OK',
                 });
-                window.location.reload();
+                //send both email to receiver and sender 
+                const senderData = await authService.getSelectedUser(senderID);
+                const receiverData = await authService.getSelectedUser(receiverID);
+                await emailService.senderTransactionReceipt(senderData.user.email, senderData.user.name, receiverData.user.name, amount).then(() => {
+                    window.location.reload();
+                })
                 return { signature, confirmation };
             } else {
                 await Swal.fire({
@@ -165,6 +172,7 @@ class WalletService {
         }
     }
 }
+
 
 const walletService = new WalletService();
 export default walletService;
