@@ -129,10 +129,13 @@ class WalletService {
                     receiverWallet,
                     amount
                 }),
+            }).catch((error) => {
+                console.error('Error transferring funds:', error);
+                throw new Error('Failed to process the transaction');
             });
-
             const transferData = await transferResponse.json();
             if(transferData.success){
+                console.log(transferData);
                 const { signature, confirmation } = transferData;
                 const senderData = await authService.getSelectedUser(senderID);
                 const receiverData = await authService.getSelectedUser(receiverID);
@@ -150,10 +153,10 @@ class WalletService {
                     icon: 'success',
                     confirmButtonText: 'OK',
                 });
-                //send both email to receiver and sender 
                 
                 return { signature, confirmation };
             } else {
+                console.log(transferData);
                 await Swal.fire({
                     title: 'Transaction Failed',
                     text: transferData.error || 'An error occurred during the transaction',
