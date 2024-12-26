@@ -134,6 +134,10 @@ class WalletService {
             const transferData = await transferResponse.json();
             if(transferData.success){
                 const { signature, confirmation } = transferData;
+                const senderData = await authService.getSelectedUser(senderID);
+                const receiverData = await authService.getSelectedUser(receiverID);
+                await emailService.receiverTransactionReceipt(receiverData.user.email, senderData.user.name, receiverData.user.name, amount)
+                await emailService.senderTransactionReceipt(senderData.user.email, senderData.user.name, receiverData.user.name, amount)
                 await Swal.fire({
                     title: 'Transaction Successful!',
                     html: `
@@ -147,10 +151,7 @@ class WalletService {
                     confirmButtonText: 'OK',
                 });
                 //send both email to receiver and sender 
-                const senderData = await authService.getSelectedUser(senderID);
-                const receiverData = await authService.getSelectedUser(receiverID);
-                await emailService.receiverTransactionReceipt(receiverData.user.email, senderData.user.name, receiverData.user.name, amount)
-                await emailService.senderTransactionReceipt(senderData.user.email, senderData.user.name, receiverData.user.name, amount)
+                
                 return { signature, confirmation };
             } else {
                 await Swal.fire({
