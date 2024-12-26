@@ -4,8 +4,11 @@ import Swal from 'sweetalert2';
 import emailService from "./EmailService";
 
 
+
+
 class WalletService {
     DEV_ENCRYPTION_PASSWORD='Z9g!N3t^bQ%XrFs2';
+    SERVER_URL = 'https://caribepayserver.onrender.com';
 
     async getUserWallet(userID) {
         try {
@@ -64,7 +67,7 @@ class WalletService {
             }
         
             const userWallet = data[0].public_key
-            const balanceResponse = await fetch(`http://localhost:8000/api/balance/${userWallet}`, {
+            const balanceResponse = await fetch(`${this.SERVER_URL}/api/balance/${userWallet}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -91,7 +94,7 @@ class WalletService {
 
     async createWallet() {
         try {
-            const walletResponse = await fetch('http://localhost:8000/api/createWallet', {
+            const walletResponse = await fetch(`${this.SERVER_URL}/api/createWallet`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -118,7 +121,7 @@ class WalletService {
     async transferFunds(senderID,receiverID, receiverWallet, amount) {
         try {
             console.log("senderID", senderID, "receiverWallet", receiverWallet, "amount", amount);
-            const transferResponse = await fetch('http://localhost:8000/api/transfer', {
+            const transferResponse = await fetch(`${this.SERVER_URL}/api/transfer`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -149,6 +152,7 @@ class WalletService {
                 //send both email to receiver and sender 
                 const senderData = await authService.getSelectedUser(senderID);
                 const receiverData = await authService.getSelectedUser(receiverID);
+                await emailService.receiverTransactionReceipt(receiverData.user.email, senderData.user.name, receiverData.user.name, amount)
                 await emailService.senderTransactionReceipt(senderData.user.email, senderData.user.name, receiverData.user.name, amount).then(() => {
                     window.location.reload();
                 })

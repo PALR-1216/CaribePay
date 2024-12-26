@@ -1,8 +1,10 @@
+
 class EmailService {
+    SERVER_URL = 'https://caribepayserver.onrender.com';
 
     async senderTransactionReceipt(to, senderName, recieverName, amount){
         try {
-            await fetch('http://localhost:8000/api/sendConfirmationEmailtoSender', {
+            await fetch(`${SERVER_URL}/api/sendConfirmationEmailtoSender`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -24,7 +26,7 @@ class EmailService {
 
     async receiverTransactionReceipt(to, senderName, recieverName, amount){
         try {
-            await fetch('http://localhost:8000/api/sendEmail', {
+            await fetch(`${SERVER_URL}/api/sendEmail`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
