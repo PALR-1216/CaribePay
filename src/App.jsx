@@ -1,6 +1,6 @@
 // src/App.js
 import React, { useEffect, useState } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import Login from './Components/LoginView/LoginView';
 import DashBoard from './Components/Dashboard/DashBoardView';
 import TransactionView from './Components/Transaction/TransactionView';
@@ -11,35 +11,43 @@ import SendFundsView from './Components/SendFunds/SendFundsView';
 import TransferFunds from './Components/Transfer/TransferFunds';
 import walletService from './Services/WalletService';
 import DepositFunds from './Components/DepositFunds/DepositFunds';
-
-
+import { supabase } from './config/supabaseConfig' // Add this import if not already present
 
 function App() {
   const navigate = useNavigate();
   const [balance, setBalance] = useState(0);
 
   useEffect(() => {
-    // Fetch balance from your wallet or API
-    const fetchBalance = async () => {
-      // Add your balance fetching logic here
-      const balance = await walletService.getBalance()
+    const handleAuth = async () => {
+      const response = await authService.verfiyAuth();
+      if (!response.success) {
+        navigate('/login');
+        return;
+      }
+      
+      const balance = await walletService.getBalance();
       setBalance(balance);
     };
 
-    authService.verfiyAuth().then((response) => {
-      if (!response.success) {
+    handleAuth();
+
+    // Use Supabase auth subscription directly
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT') {
         navigate('/login');
-      } else {
-        navigate('/dashboard');
-        fetchBalance();
       }
     });
-  }, []);
+
+    return () => {
+      subscription?.unsubscribe();
+    };
+  }, [navigate]);
+
   return (
     <div>
-      {/* Navigation component will go here */}
       <Routes>
-        <Route path="/login"  element={<Login />} />
+        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/login"   element={<Login />} />
         <Route path="/dashboard" element={<DashBoard/>} />
         <Route path="/transactions" element={<TransactionView />} />
         <Route path="/signUp" element={<SignUpView />} />

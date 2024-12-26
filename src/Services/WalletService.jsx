@@ -3,9 +3,6 @@ import authService from "./AuthService";
 import Swal from 'sweetalert2';
 import emailService from "./EmailService";
 
-
-
-
 class WalletService {
     DEV_ENCRYPTION_PASSWORD='Z9g!N3t^bQ%XrFs2';
     SERVER_URL = 'https://caribepayserver.onrender.com';
@@ -118,7 +115,7 @@ class WalletService {
         }
     }
 
-    async transferFunds(senderID,receiverID, receiverWallet, amount) {
+    async transferFunds(senderID, receiverID, receiverWallet, amount) {
         try {
             console.log("senderID", senderID, "receiverWallet", receiverWallet, "amount", amount);
             const transferResponse = await fetch(`${this.SERVER_URL}/api/transfer`, {
@@ -152,11 +149,8 @@ class WalletService {
                 //send both email to receiver and sender 
                 const senderData = await authService.getSelectedUser(senderID);
                 const receiverData = await authService.getSelectedUser(receiverID);
-                // await emailService.receiverTransactionReceipt(receiverData.user.email, senderData.user.name, receiverData.user.name, amount)
-                await emailService.senderTransactionReceipt(senderData.user.email, senderData.user.name, receiverData.user.name, amount).then(() => {
-
-                    window.location.href = '/dashboard';
-                })
+                await emailService.receiverTransactionReceipt(receiverData.user.email, senderData.user.name, receiverData.user.name, amount)
+                await emailService.senderTransactionReceipt(senderData.user.email, senderData.user.name, receiverData.user.name, amount)
                 return { signature, confirmation };
             } else {
                 await Swal.fire({

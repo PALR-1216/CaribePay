@@ -16,7 +16,7 @@ class EmailService {
                     recieverName,
                     amount
                 }),
-            });
+            })
             
         } catch (error) {
             console.error('Error sending email:', error);
@@ -26,7 +26,7 @@ class EmailService {
 
     async receiverTransactionReceipt(to, senderName, recieverName, amount){
         try {
-            await fetch(`${this.SERVER_URL}/api/sendEmail`, {
+            await fetch(`${this.SERVER_URL}/api/sendConfirmationEmailtoReceiver`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -38,7 +38,7 @@ class EmailService {
                     recieverName,
                     amount
                 }),
-            });
+            })
             
         } catch (error) {
             console.error('Error sending email:', error);

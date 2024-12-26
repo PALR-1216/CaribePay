@@ -5,6 +5,7 @@ import walletService from '../../Services/WalletService';
 import authService from '../../Services/AuthService';
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import { supabase } from '../../config/supabaseConfig';
 
 export default function DashBoardView() {
     const [balance, setBalance] = useState(null);
@@ -15,8 +16,9 @@ export default function DashBoardView() {
         getUserBalance();
     }, []);
     
-    const handleLogout = () => {
+    const handleLogout = async() => {
         // Add any logout logic here (e.g., clearing tokens/state)
+        await supabase.auth.signOut();
         navigate('/login');
     };
 
