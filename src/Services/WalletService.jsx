@@ -154,9 +154,8 @@ class WalletService {
                 const receiverData = await authService.getSelectedUser(receiverID);
                 // await emailService.receiverTransactionReceipt(receiverData.user.email, senderData.user.name, receiverData.user.name, amount)
                 await emailService.senderTransactionReceipt(senderData.user.email, senderData.user.name, receiverData.user.name, amount).then(() => {
-                    console.log("Email sent to sender")
 
-                    // window.location.href = '/dashboard';
+                    window.location.href = '/dashboard';
                 })
                 return { signature, confirmation };
             } else {
