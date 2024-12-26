@@ -4,7 +4,7 @@ class EmailService {
 
     async senderTransactionReceipt(to, senderName, recieverName, amount){
         try {
-            await fetch(`${SERVER_URL}/api/sendConfirmationEmailtoSender`, {
+            await fetch(`${this.SERVER_URL}/api/sendConfirmationEmailtoSender`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -26,7 +26,7 @@ class EmailService {
 
     async receiverTransactionReceipt(to, senderName, recieverName, amount){
         try {
-            await fetch(`${SERVER_URL}/api/sendEmail`, {
+            await fetch(`${this.SERVER_URL}/api/sendEmail`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

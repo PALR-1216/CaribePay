@@ -142,7 +142,7 @@ class WalletService {
                     html: `
                         <div class="transaction-receipt">
                             <p><strong>Amount:</strong> ${amount} USDC</p>
-                            <p><strong>Transaction Signature:</strong> ${transferData.result.signature}</p>
+                            <p><strong>Transaction Signature:</strong> ${transferData.result.signature.slice(-6)}</p>
                             <p><strong>Status:</strong> Confirmed</p>
                         </div>
                     `,
@@ -152,9 +152,11 @@ class WalletService {
                 //send both email to receiver and sender 
                 const senderData = await authService.getSelectedUser(senderID);
                 const receiverData = await authService.getSelectedUser(receiverID);
-                await emailService.receiverTransactionReceipt(receiverData.user.email, senderData.user.name, receiverData.user.name, amount)
+                // await emailService.receiverTransactionReceipt(receiverData.user.email, senderData.user.name, receiverData.user.name, amount)
                 await emailService.senderTransactionReceipt(senderData.user.email, senderData.user.name, receiverData.user.name, amount).then(() => {
-                    window.location.reload();
+                    console.log("Email sent to sender")
+
+                    // window.location.href = '/dashboard';
                 })
                 return { signature, confirmation };
             } else {
